@@ -3,6 +3,8 @@
 
 using namespace std;
 
+#define MAX_SIZE 1024
+
 void merge(float array[], int const left, int const mid, int const right) {
 
 	auto const subArrayOne = mid - left + 1;
@@ -59,11 +61,16 @@ class numcpp{
 
     public:
 
+        numcpp(){
+            size = 0;
+            ptr = NULL;
+        }
+
         numcpp(float *p, int s){
             size = s;
             ptr = NULL;
             if (s != 0){
-                ptr = new float[s];
+                ptr = new float[MAX_SIZE];
                 for (int i = 0; i < s; i++){
                     ptr[i] = p[i];
                 }
@@ -155,12 +162,20 @@ class numcpp{
                 exit(0);
             }
             if (stop > start){
+                if (step < 0){
+                    cout << "Invalid step size, exiting ..." << endl;
+                    exit(0);
+                }
                 for(int i = start; i <= stop; i = i + step){
                     p[j] = ptr[i];
                     j++;
                 }
             }
             else if (stop < start){
+                if (step > 0){
+                    cout << "Invalid step size, exiting ..." << endl;
+                    exit(0);
+                }
                 for(int i = start; i >= stop; i = i + step){
                     p[j] = ptr[i];
                     j++;
@@ -251,5 +266,20 @@ class numcpp{
                 }
             }
             return retval;
+        }
+
+        void append(float a){
+            if (size == 0){
+                ptr = new float[MAX_SIZE];
+                ptr[0] = a;
+                return;
+            }
+            if (size > MAX_SIZE){
+                cout << "Array size exceeds maximum size, exiting ..." << endl;
+                exit(0);
+            }
+            size = size + 1;
+            ptr[size - 1] = a;
+            return;
         }
 };
