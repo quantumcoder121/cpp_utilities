@@ -69,6 +69,10 @@ class numcpp{
         numcpp(float *p, int s){
             size = s;
             ptr = NULL;
+            if (s > MAX_SIZE){
+                cout << "Input size greater than maximum size, exiting ..." << endl;
+                exit(0);
+            }
             if (s != 0){
                 ptr = new float[MAX_SIZE];
                 for (int i = 0; i < s; i++){
@@ -274,8 +278,8 @@ class numcpp{
                 ptr[0] = a;
                 return;
             }
-            if (size > MAX_SIZE){
-                cout << "Array size exceeds maximum size, exiting ..." << endl;
+            if (size == MAX_SIZE){
+                cout << "Initial array size equal to maximum size, exiting ..." << endl;
                 exit(0);
             }
             size = size + 1;
