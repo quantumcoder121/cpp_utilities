@@ -5,91 +5,97 @@ using namespace std;
 
 #define MAX_SIZE 1024
 
-void merge(float array[], int const left, int const mid, int const right) {
-
-	auto const subArrayOne = mid - left + 1;
-	auto const subArrayTwo = right - mid;
-
-	auto *leftArray = new float[subArrayOne], *rightArray = new float[subArrayTwo];
-
-	for (auto i = 0; i < subArrayOne; i++) leftArray[i] = array[left + i];
-	for (auto j = 0; j < subArrayTwo; j++) rightArray[j] = array[mid + 1 + j];
-
-	auto indexOfSubArrayOne = 0, indexOfSubArrayTwo = 0;
-	int indexOfMergedArray = left;
-
-	while (indexOfSubArrayOne < subArrayOne && indexOfSubArrayTwo < subArrayTwo) {
-		if (leftArray[indexOfSubArrayOne] <= rightArray[indexOfSubArrayTwo]) {
-			array[indexOfMergedArray] = leftArray[indexOfSubArrayOne];
-			indexOfSubArrayOne++;
-		}
-		else {
-			array[indexOfMergedArray] = rightArray[indexOfSubArrayTwo];
-			indexOfSubArrayTwo++;
-		}
-		indexOfMergedArray++;
-	}
-
-	while (indexOfSubArrayOne < subArrayOne) {
-		array[indexOfMergedArray] = leftArray[indexOfSubArrayOne];
-		indexOfSubArrayOne++;
-		indexOfMergedArray++;
-	}
-
-	while (indexOfSubArrayTwo < subArrayTwo) {
-		array[indexOfMergedArray] = rightArray[indexOfSubArrayTwo];
-		indexOfSubArrayTwo++;
-		indexOfMergedArray++;
-	}
+/*
+void merge(vector<double> arr, int f, int m, int l){
+    vector<double> l_arr;
+    vector<double> r_arr;
+    for (int i = f; i <= m; i++){
+        l_arr.push_back(arr[i]);
+    }
+    for (int i = m + 1; i <= l; i++){
+        r_arr.push_back(arr[i]);
+    }
+    int i = 0;
+    int j = 0;
+    int k = 0;
+    while (j < m - f + 1 && k < l - m){
+        if (l_arr[j] < r_arr[k]){
+            arr[i] = l_arr[j];
+            j++;
+        }
+        else {
+            arr[i] = r_arr[k];
+            k++;
+        }
+        i++;
+    }
+    return;
 }
 
-void mergeSort(float array[], int const begin, int const end) {
-
-	if (begin >= end) return; // Returns recursively
-
-	auto mid = begin + (end - begin) / 2;
-	mergeSort(array, begin, mid);
-	mergeSort(array, mid + 1, end);
-	merge(array, begin, mid, end);
+void merge_sort(vector<double> arr, int f, int l){
+    if (l - f == 1){
+        int min;
+        int max;
+        if (arr[f] < arr[l]){
+            min = arr[f];
+            max = arr[l];
+        }
+        else {
+            min = arr[l];
+            max = arr[f];
+        }
+        return;
+    }
+    int m = (f + l) / 2;
+    merge_sort(arr, f, m);
+    merge_sort(arr, m + 1, l);
+    merge(arr, f, m, l);
+    return;
 }
+*/
 
-class numcpp{
-
-    private:
-        float *ptr;
-        int size;
+template <typename dtype> class numcpp{
 
     public:
+ 
+        dtype* ptr;
+        long long int size;
+        long long int max_size;
 
         numcpp(){
+            ptr = new dtype[1];
             size = 0;
-            ptr = NULL;
+            max_size = 1;
         }
 
-        numcpp(float *p, int s){
-            size = s;
-            ptr = NULL;
-            if (s > MAX_SIZE){
-                cout << "Input size greater than maximum size, exiting ..." << endl;
+        numcpp(int s){
+            if (s < 0){
+                cout << "Input size is negative, exiting ...";
                 exit(0);
             }
-            if (s != 0){
-                ptr = new float[MAX_SIZE];
-                for (int i = 0; i < s; i++){
-                    ptr[i] = p[i];
-                }
-            }
+            ptr = new dtype[s];
+            size = s;
+            max_size = s;
         }
 
-        int length(){
+        numcpp(int s, dtype a){
+            if (s < 0){
+                cout << "Input size is negative, exiting ...";
+                exit(0);
+            }
+            ptr = new dtype[s];
+            for (int i = 0; i < s; i++){
+                ptr[i] = a;
+            }
+            size = s;
+            max_size = s;
+        }
+
+        unsigned long long int length(){
             return size;
         }
 
-        float* arr(){
-            return ptr;
-        }
-
-        float& operator[](int index){
+        dtype& operator[](int index){
             if (index < 0){
                 index = size + index;
             }
@@ -100,32 +106,96 @@ class numcpp{
             return ptr[index];
         }
 
+        dtype& operator[](long int index){
+            if (index < 0){
+                index = size + index;
+            }
+            if (index >= size || index < 0){
+                cout << "Index out of bound, exiting ..." << endl;
+                exit(0);
+            }
+            return ptr[index];
+        }
+
+        dtype& operator[](long long int index){
+            if (index < 0){
+                index = size + index;
+            }
+            if (index >= size || index < 0){
+                cout << "Index out of bound, exiting ..." << endl;
+                exit(0);
+            }
+            return ptr[index];
+        }
+
+        void append(dtype a){
+            if (size == max_size){
+                dtype* temp = new dtype[2 * max_size];
+                for (unsigned long long int i = 0; i < size; i++){
+                    temp[i] = ptr[i];
+                }
+                ptr = temp;
+                delete[] temp;
+                max_size = 2 * max_size;
+            }
+            ptr[size] = a;
+            size = size + 1;
+            return;
+        }
+
         numcpp operator+(numcpp a){
-            int s = a.length();
-            float *p = a.arr();
+            long long int s = a.length();
             if (s != size){
                 cout << "Lengths don't match, exiting ...";
                 exit(0);
             }
-            float q[size];
-            for (int i = 0; i < size; i++){
-                q[i] = p[i] + ptr[i];
+            numcpp<dtype> ret = new numcpp<dtype>(size);
+            for (long long int i = 0; i < size; i++){
+                ret[i] = ptr[i] + a[i];
             }
-            return numcpp(q, size);
+            return ret;
         }
 
         numcpp operator-(numcpp a){
-            int s = a.length();
-            float *p = a.arr();
+            long long int s = a.length();
             if (s != size){
                 cout << "Lengths don't match, exiting ...";
                 exit(0);
             }
-            float q[size];
-            for (int i = 0; i < size; i++){
-                q[i] = ptr[i] - p[i];
+            numcpp<dtype> ret = new numcpp<dtype>(size);
+            for (long long int i = 0; i < size; i++){
+                ret[i] = ptr[i] - a[i];
             }
-            return numcpp(q, size);
+            return ret;
+        }
+
+        numcpp operator*(numcpp a){
+            long long int s = a.length();
+            if (s != size){
+                cout << "Lengths don't match, exiting ...";
+                exit(0);
+            }
+            numcpp<dtype> ret = new numcpp<dtype>(size);
+            for (long long int i = 0; i < size; i++){
+                ret[i] = ptr[i] * a[i];
+            }
+            return ret;
+        }
+
+        dtype dot(numcpp a){
+            long long int s = a.length();
+            if (s != size){
+                cout << "Lengths don't match, exiting ...";
+                exit(0);
+            }
+            if (s == 0){
+                cout << "Array size zero, exiting ...";
+            }
+            dtype ret = ptr[0] * a[0];
+            for (long long int i = 1; i < size; i++){
+                ret = ret + ptr[i] * a[i];
+            }
+            return ret;
         }
 
         void print(){
@@ -151,7 +221,7 @@ class numcpp{
             if (start < 0){
                 start = size + start;
             }
-            float *p = new float[size];
+            dtype p[size];
             int j = 0;
             if (start < 0 || start >= size){
                 cout << "Start Index out of bound, exiting ..." << endl;
@@ -170,7 +240,7 @@ class numcpp{
                     cout << "Invalid step size, exiting ..." << endl;
                     exit(0);
                 }
-                for(int i = start; i <= stop; i = i + step){
+                for(long long int i = start; i <= stop; i = i + step){
                     p[j] = ptr[i];
                     j++;
                 }
@@ -180,32 +250,33 @@ class numcpp{
                     cout << "Invalid step size, exiting ..." << endl;
                     exit(0);
                 }
-                for(int i = start; i >= stop; i = i + step){
+                for(long long int i = start; i >= stop; i = i - step){
                     p[j] = ptr[i];
                     j++;
                 }
             }
             else if (stop == start){
                 p[0] = ptr[start];
-                j = 1;
+                j++;
             }
-            numcpp retval(p, j);
+            numcpp<dtype> retval(j, p);
             return retval;
         }
 
-        float mean(){
+        dtype mean(){
             if (size == 0){
-                cout << "Array size NULL, exiting ...";
+                cout << "Array size zero, exiting ...";
                 exit(0);
             }
-            float a = 0.0;
-            float n = size;
-            for (int i = 0; i < size; i++){
+            dtype a = ptr[0];
+            dtype n = size;
+            for (int i = 1; i < size; i++){
                 a = a + ptr[i];
             }
-            return a/n;
+            return a / n;
         }
 
+        /*
         numcpp sort(){
             if (size == 0){
                 cout << "Array size NULL, exiting ...";
@@ -219,7 +290,7 @@ class numcpp{
             numcpp retval(arr, size);
             return retval;
         }
-
+        
         float median(){
             if (size == 0){
                 cout << "Array size NULL, exiting ...";
@@ -237,16 +308,14 @@ class numcpp{
                 return (arr[(size - 1) / 2]);
             }
         }
+        */
 
-        float max(){
+        dtype max(){
             if (size == 0){
                 cout << "Array size NULL, exiting ...";
                 exit(0);
             }
-            float retval = ptr[0];
-            if (size == 1){
-                return retval;
-            }
+            dtype retval = ptr[0];
             for(int i = 1; i < size; i++){
                 if (ptr[i] > retval){
                     retval = ptr[i];
@@ -255,35 +324,17 @@ class numcpp{
             return retval;
         }
 
-        float min(){
+        dtype min(){
             if (size == 0){
                 cout << "Array size NULL, exiting ...";
                 exit(0);
             }
-            float retval = ptr[0];
-            if (size == 1){
-                return retval;
-            }
+            dtype retval = ptr[0];
             for(int i = 1; i < size; i++){
                 if (ptr[i] < retval){
                     retval = ptr[i];
                 }
             }
             return retval;
-        }
-
-        void append(float a){
-            if (size == 0){
-                ptr = new float[MAX_SIZE];
-                ptr[0] = a;
-                return;
-            }
-            if (size == MAX_SIZE){
-                cout << "Initial array size equal to maximum size, exiting ..." << endl;
-                exit(0);
-            }
-            size = size + 1;
-            ptr[size - 1] = a;
-            return;
         }
 };
