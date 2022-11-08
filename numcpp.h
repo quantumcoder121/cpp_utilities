@@ -55,33 +55,56 @@ void merge_sort(vector<double> arr, int f, int l){
 */
 
 template <typename dtype> class numcpp{
-
-    public:
  
         dtype* ptr;
         long long int size;
         long long int max_size;
 
+    public:
+
+        // default constructor
         numcpp(){
             ptr = new dtype[1];
             size = 0;
             max_size = 1;
         }
 
+        // following three could be potentially redundant constructors
         numcpp(int s){
-            if (s < 0){
-                cout << "Input size is negative, exiting ...";
-                exit(0);
+            if (s <= 0){
+                cout << "Input size is not positive, exiting ...";
+                exit(1);
             }
             ptr = new dtype[s];
             size = s;
             max_size = s;
         }
 
+        numcpp(long int s){
+            if (s < 0 || s == 0){
+                cout << "Input size is not positive, exiting ...";
+                exit(1);
+            }
+            ptr = new dtype[s];
+            size = s;
+            max_size = s;
+        }
+
+        numcpp(long long int s){
+            if (s < 0 || s == 0){
+                cout << "Input size is not positive, exiting ...";
+                exit(1);
+            }
+            ptr = new dtype[s];
+            size = s;
+            max_size = s;
+        }
+
+        // following three are the standard set of constructors for now
         numcpp(int s, dtype a){
-            if (s < 0){
-                cout << "Input size is negative, exiting ...";
-                exit(0);
+            if (s < 0 || s == 0){
+                cout << "Input size is not positive, exiting ...";
+                exit(1);
             }
             ptr = new dtype[s];
             for (int i = 0; i < s; i++){
@@ -91,10 +114,52 @@ template <typename dtype> class numcpp{
             max_size = s;
         }
 
-        unsigned long long int length(){
+        numcpp(long int s, dtype a){
+            if (s < 0 || s == 0){
+                cout << "Input size is not positive, exiting ...";
+                exit(1);
+            }
+            ptr = new dtype[s];
+            for (int i = 0; i < s; i++){
+                ptr[i] = a;
+            }
+            size = s;
+            max_size = s;
+        }
+
+        numcpp(long long int s, dtype a){
+            if (s < 0 || s == 0){
+                cout << "Input size is not positive, exiting ...";
+                exit(1);
+            }
+            ptr = new dtype[s];
+            for (int i = 0; i < s; i++){
+                ptr[i] = a;
+            }
+            size = s;
+            max_size = s;
+        }
+
+        // unsafe constructor
+        numcpp(long long int s, dtype* a){
+            if (s < 0 || s == 0){
+                cout << "Input size is not positive, exiting ...";
+                exit(1);
+            }
+            ptr = new dtype[s];
+            for (int i = 0; i < s; i++){
+                ptr[i] = a[i];
+            }
+            size = s;
+            max_size = s;
+        }
+
+        // size/length of the array
+        long long int length(){
             return size;
         }
 
+        // element access operator
         dtype& operator[](int index){
             if (index < 0){
                 index = size + index;
@@ -128,13 +193,17 @@ template <typename dtype> class numcpp{
             return ptr[index];
         }
 
+        // adding extra element to the array (memory allocation update as new_size = 2 * size)
         void append(dtype a){
             if (size == max_size){
-                dtype* temp = new dtype[2 * max_size];
-                for (unsigned long long int i = 0; i < size; i++){
+                dtype* temp = new dtype[max_size];
+                for (long long int i = 0; i < size; i++){
                     temp[i] = ptr[i];
                 }
-                ptr = temp;
+                ptr = new dtype[2 * max_size];
+                for (long long int i = 0; i < size; i++){
+                    ptr[i] = temp[i];
+                }
                 delete[] temp;
                 max_size = 2 * max_size;
             }
@@ -143,45 +212,47 @@ template <typename dtype> class numcpp{
             return;
         }
 
-        numcpp operator+(numcpp a){
+        // element wise operations
+        numcpp<dtype> operator+(numcpp<dtype> a){
             long long int s = a.length();
             if (s != size){
-                cout << "Lengths don't match, exiting ...";
+                cout << "Lengths don't match, exiting ...\n";
                 exit(0);
             }
-            numcpp<dtype> ret = new numcpp<dtype>(size);
+            numcpp<dtype> ret = numcpp<dtype>(size);
             for (long long int i = 0; i < size; i++){
                 ret[i] = ptr[i] + a[i];
             }
             return ret;
         }
 
-        numcpp operator-(numcpp a){
+        numcpp<dtype> operator-(numcpp<dtype> a){
             long long int s = a.length();
             if (s != size){
                 cout << "Lengths don't match, exiting ...";
                 exit(0);
             }
-            numcpp<dtype> ret = new numcpp<dtype>(size);
+            numcpp<dtype> ret = numcpp<dtype>(size);
             for (long long int i = 0; i < size; i++){
                 ret[i] = ptr[i] - a[i];
             }
             return ret;
         }
 
-        numcpp operator*(numcpp a){
+        numcpp<dtype> operator*(numcpp<dtype> a){
             long long int s = a.length();
             if (s != size){
                 cout << "Lengths don't match, exiting ...";
                 exit(0);
             }
-            numcpp<dtype> ret = new numcpp<dtype>(size);
+            numcpp<dtype> ret = numcpp<dtype>(size);
             for (long long int i = 0; i < size; i++){
                 ret[i] = ptr[i] * a[i];
             }
             return ret;
         }
 
+        // dot product
         dtype dot(numcpp a){
             long long int s = a.length();
             if (s != size){
@@ -198,6 +269,7 @@ template <typename dtype> class numcpp{
             return ret;
         }
 
+        // printing the array
         void print(){
             if (size == 0){
                 cout << "NULL" << endl;
@@ -214,52 +286,55 @@ template <typename dtype> class numcpp{
             }
         }
 
-        numcpp slice(int start = 0, int stop = -1, int step = 1){
+        // slice (a feature similar yet different to the one in python)
+        numcpp<dtype> slice(long long int start = 0, long long int stop = -1, long long int step = 1){
             if (stop < 0){
                 stop = size + stop;
             }
             if (start < 0){
                 start = size + start;
             }
-            dtype p[size];
-            int j = 0;
+            // dtype p[size];
+            numcpp<dtype> retval;
+            // int j = 0;
             if (start < 0 || start >= size){
-                cout << "Start Index out of bound, exiting ..." << endl;
-                exit(0);
+                cout << "Start index out of bound, exiting ..." << endl;
+                exit(1);
             }
             if (stop < 0 || stop >= size){
-                cout << "Stop Index out of bound, exiting ..." << endl;
-                exit(0);
+                cout << "Stop index out of bound, exiting ..." << endl;
+                exit(1);
             }
             if (step == 0){
                 cout << "Step size cannot be zero, exiting ..." << endl;
-                exit(0);
+                exit(1);
             }
             if (stop > start){
                 if (step < 0){
                     cout << "Invalid step size, exiting ..." << endl;
-                    exit(0);
+                    exit(1);
                 }
                 for(long long int i = start; i <= stop; i = i + step){
-                    p[j] = ptr[i];
-                    j++;
+                    retval.append(ptr[i]);
+                    // j++;
                 }
             }
             else if (stop < start){
                 if (step > 0){
                     cout << "Invalid step size, exiting ..." << endl;
-                    exit(0);
+                    exit(1);
                 }
-                for(long long int i = start; i >= stop; i = i - step){
-                    p[j] = ptr[i];
-                    j++;
+                for(long long int i = start; i >= stop; i = i + step){
+                    retval.append(ptr[i]);
+                    // j++;
                 }
             }
             else if (stop == start){
-                p[0] = ptr[start];
-                j++;
+                retval.append(ptr[start]);
+                // j++;
             }
-            numcpp<dtype> retval(j, p);
+            // numcpp<dtype> retval = numcpp<dtype>(j, p);
+            // delete[] p;
             return retval;
         }
 
@@ -310,6 +385,7 @@ template <typename dtype> class numcpp{
         }
         */
 
+        // maximum and minimum elements in the array
         dtype max(){
             if (size == 0){
                 cout << "Array size NULL, exiting ...";
