@@ -226,6 +226,14 @@ template <typename dtype> class numcpp{
             return ret;
         }
 
+        numcpp<dtype> operator+(dtype a){
+            numcpp<dtype> ret = numcpp<dtype>(size);
+            for (long long int i = 0; i < size; i++){
+                ret[i] = ptr[i] + a;
+            }
+            return ret;
+        }
+
         numcpp<dtype> operator-(numcpp<dtype> a){
             long long int s = a.length();
             if (s != size){
@@ -239,6 +247,14 @@ template <typename dtype> class numcpp{
             return ret;
         }
 
+        numcpp<dtype> operator-(dtype a){
+            numcpp<dtype> ret = numcpp<dtype>(size);
+            for (long long int i = 0; i < size; i++){
+                ret[i] = ptr[i] - a;
+            }
+            return ret;
+        }
+
         numcpp<dtype> operator*(numcpp<dtype> a){
             long long int s = a.length();
             if (s != size){
@@ -248,6 +264,36 @@ template <typename dtype> class numcpp{
             numcpp<dtype> ret = numcpp<dtype>(size);
             for (long long int i = 0; i < size; i++){
                 ret[i] = ptr[i] * a[i];
+            }
+            return ret;
+        }
+
+        numcpp<dtype> operator*(dtype a){
+            numcpp<dtype> ret = numcpp<dtype>(size);
+            for (long long int i = 0; i < size; i++){
+                ret[i] = ptr[i] * a;
+            }
+            return ret;
+        }
+
+
+        numcpp<dtype> operator/(numcpp<dtype> a){
+            long long int s = a.length();
+            if (s != size){
+                cout << "Lengths don't match, exiting ...";
+                exit(0);
+            }
+            numcpp<dtype> ret = numcpp<dtype>(size);
+            for (long long int i = 0; i < size; i++){
+                ret[i] = ptr[i] / a[i];
+            }
+            return ret;
+        }
+
+        numcpp<dtype> operator/(dtype a){
+            numcpp<dtype> ret = numcpp<dtype>(size);
+            for (long long int i = 0; i < size; i++){
+                ret[i] = ptr[i] / a;
             }
             return ret;
         }
@@ -412,5 +458,11 @@ template <typename dtype> class numcpp{
                 }
             }
             return retval;
+        }
+
+        void elemwise_update(dtype (*func)dtype){
+            for (long long int i = 0; i < size; i++){
+                ptr[i] = func(ptr[i]);
+            }
         }
 };

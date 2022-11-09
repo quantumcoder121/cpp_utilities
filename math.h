@@ -1,24 +1,29 @@
 #include<iostream>
 #include<cstdlib>
+#include<cfloat>
 
 using namespace std;
+
+double mag(double a){
+    return 0;
+}
 
 double exp(double a){
     double n = 0.0;
     double t = 1.0;
     double s = 0.0;
-    while (t > 0.000001 || t < -0.000001){
+    while (t > DBL_EPSILON || t < -DBL_EPSILON){
         s = s + t;
         n = n + 1;
         t = t * a / n;
     }
-    return (s);
+    return s;
 }
 
 double ln(double a){
-    if (a < 0.0){
+    if (a < DBL_EPSILON){
         cout << "Input less than zero, exiting ...";
-        exit(0);
+        exit(1);
     }
     double x;
     if (a > 1.0) x = 1.0 - 1.0 / a;
@@ -26,7 +31,7 @@ double ln(double a){
     double n = 1.0;
     double t = x;
     double s = 0.0;
-    while (t > 0.000001 || t < -0.000001){
+    while (t > DBL_EPSILON || t < -DBL_EPSILON){
         s = s + t;
         t = t * x * n / (n + 1);
         n = n + 1;
@@ -44,30 +49,30 @@ double sine(double a){
     double n = 1.0;
     double t = a;
     double s = 0.0;
-    while (t > 0.000001 || t < -0.000001){
+    while (t > DBL_EPSILON || t < -DBL_EPSILON){
         s = s + t;
         t = (- 1.0) * t * a * a / (n * n + 3.0 * n + 2.0);
         n = n + 2.0;
     }
-    return (s);
+    return s;
 }
 
 double cosine(double a){
     double n = 0.0;
     double t = 1.0;
     double s = 0.0;
-    while (t > 0.000001 || t < -0.000001){
+    while (t > DBL_EPSILON || t < -DBL_EPSILON){
         s = s + t;
         t = (- 1.0) * t * a * a / (n * n + 3.0 * n + 2.0);
         n = n + 2.0;
     }
-    return (s);
+    return s;
 }
 
 double tangent(double a){
     double s = sine(a);
     double c = cosine(a);
-    if (c < 0.000001 && c > -0.000001){
+    if (c < DBL_EPSILON && c > -DBL_EPSILON){
         cout << "Input value invalid, exiting ...";
         exit(0);
     }
@@ -175,7 +180,25 @@ double bin(double (*func)(double), double l, double r){
     double d = r - l;
     double m = (r + l) / 2.0;
     double m_v = func(m);
-    if (d < 0.000001) return m;
+    if (d < DBL_EPSILON) return m;
     else if (m_v > 0) return bin(func, l, m);
     else return bin(func, m, r);
+}
+
+double sqrt(double a){
+    if (a < DBL_EPSILON){
+        cout << "Invalid Input, exiting ...";
+        exit(1);
+    }
+    if (a > 1){
+        return bin([](double x) -> double{return x * x - a;}, 0, a);
+    }
+    else {
+        return bin([](double x) -> double{return x * x - a;}, 0, 1);
+    }
+}
+
+double derivative(double (*func)(double), double a){
+    double h = bin([](double x) -> double{return x * x - DBL_EPSILON;}, 0, 1);
+    return (func(a + h) - func(a)) / h;
 }
