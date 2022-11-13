@@ -1,5 +1,5 @@
 ## numcpp.h
-C++ version of NumPy. Useful for building neural networks and statistical analyses. ```numcpp.h``` is the main file.
+C++ version of NumPy. Useful for building neural networks and statistical analyses. ```numcpp.h``` is the main file. Use ```-fopenmp``` flag to compile using OpenMP for better performance. (parallelization)
 ## math.h
 Includes several math functions in C++. ```math.h``` is the main file.
 ## cppdl.h
