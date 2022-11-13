@@ -1,5 +1,6 @@
 #include<iostream>
 #include<cstdlib>
+#include"math.h"
 
 #define MAX_SIZE 1024
 
@@ -64,6 +65,16 @@ template <typename dtype> class numcpp{
             ptr = new dtype[1];
             size = 0;
             max_size = 1;
+        }
+
+        // copy constructor
+        numcpp(numcpp<dtype> &a){
+            long long int s = a.length();
+            ptr = new dtype[s];
+            size = s;
+            max_size = s;
+            #pragma omp parallel for
+            for (long long int i = 0; i < s; i++) ptr[i] = a[i];
         }
 
         // following three could be potentially redundant constructors
@@ -215,6 +226,17 @@ template <typename dtype> class numcpp{
             return ret;
         }
 
+        void operator+=(numcpp<dtype> a){
+            long long int s = a.length();
+            if (s != size){
+                std::cout << "Array lengths don't match, exiting...\n";
+                exit(1);
+            }
+            #pragma omp parallel for
+            for (long long int i = 0; i < size; i++) ptr[i] = ptr[i] + a[i];
+            return;
+        }
+
         // numcpp<dtype> operator+(dtype a){
         //     numcpp<dtype> ret = numcpp<dtype>(size);
         //     #pragma omp parallel for
@@ -232,6 +254,17 @@ template <typename dtype> class numcpp{
             #pragma omp parallel for
             for (long long int i = 0; i < size; i++) ret[i] = ptr[i] - a[i];
             return ret;
+        }
+
+        void operator-=(numcpp<dtype> a){
+            long long int s = a.length();
+            if (s != size){
+                std::cout << "Array lengths don't match, exiting...\n";
+                exit(1);
+            }
+            #pragma omp parallel for
+            for (long long int i = 0; i < size; i++) ptr[i] = ptr[i] - a[i];
+            return;
         }
 
         // numcpp<dtype> operator-(dtype a){
@@ -253,11 +286,28 @@ template <typename dtype> class numcpp{
             return ret;
         }
 
+        void operator*=(numcpp<dtype> a){
+            long long int s = a.length();
+            if (s != size){
+                std::cout << "Array lengths don't match, exiting...\n";
+                exit(1);
+            }
+            #pragma omp parallel for
+            for (long long int i = 0; i < size; i++) ptr[i] = ptr[i] * a[i];
+            return;
+        }
+
         numcpp<dtype> operator*(dtype a){
             numcpp<dtype> ret = numcpp<dtype>(size);
             #pragma omp parallel for
             for (long long int i = 0; i < size; i++) ret[i] = ptr[i] * a;
             return ret;
+        }
+
+        numcpp<dtype> operator*=(dtype a){
+            #pragma omp parallel for
+            for (long long int i = 0; i < size; i++) ptr[i] = ptr[i] * a;
+            return;
         }
 
         numcpp<dtype> operator/(numcpp<dtype> a){
@@ -272,11 +322,28 @@ template <typename dtype> class numcpp{
             return ret;
         }
 
+        void operator/=(numcpp<dtype> a){
+            long long int s = a.length();
+            if (s != size){
+                std::cout << "Array lengths don't match, exiting...\n";
+                exit(1);
+            }
+            #pragma omp parallel for
+            for (long long int i = 0; i < size; i++) ptr[i] = ptr[i] / a[i];
+            return;
+        }
+
         numcpp<dtype> operator/(dtype a){
             numcpp<dtype> ret = numcpp<dtype>(size);
             #pragma omp parallel for
             for (long long int i = 0; i < size; i++) ret[i] = ptr[i] / a;
             return ret;
+        }
+
+        numcpp<dtype> operator/=(dtype a){
+            #pragma omp parallel for
+            for (long long int i = 0; i < size; i++) ptr[i] = ptr[i] / a;
+            return;
         }
 
         // dot product
@@ -294,6 +361,17 @@ template <typename dtype> class numcpp{
             #pragma omp parallel for
             for (long long int i = 1; i < size; i++) ret = ret + ptr[i] * a[i];
             return ret;
+        }
+
+        dtype abs(){
+            if (size == 0){
+                std::cout << "Array length zero, exiting...\n";
+                exit(3);
+            }
+            dtype ret = ptr[0] * ptr[0];
+            #pragma omp parallel for
+            for (long long int i = 1; i < size; i++) ret = ret + ptr[i] * ptr[i];
+            return sqrt(ret);
         }
 
         // printing the array
@@ -461,4 +539,5 @@ numcpp::void linspace(dtype f = 0, dtype l, long long int n = 1){
     double step_size = (l - f) / n;
     #pragma omp parallel for
     for (long long int i = 0; i < n; i++) ptr[i] = l + step_size * i;
+    return;
 }
