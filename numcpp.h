@@ -304,7 +304,7 @@ template <typename dtype> class numcpp{
             return ret;
         }
 
-        numcpp<dtype> operator*=(dtype a){
+        void operator*=(dtype a){
             #pragma omp parallel for
             for (long long int i = 0; i < size; i++) ptr[i] = ptr[i] * a;
             return;
@@ -340,7 +340,7 @@ template <typename dtype> class numcpp{
             return ret;
         }
 
-        numcpp<dtype> operator/=(dtype a){
+        void operator/=(dtype a){
             #pragma omp parallel for
             for (long long int i = 0; i < size; i++) ptr[i] = ptr[i] / a;
             return;
