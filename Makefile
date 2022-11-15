@@ -9,4 +9,5 @@ target:
 	g++ -O3 -Wall -Wextra -Wpedantic -I./include $(main) -L./lib -lml -fopenmp -Wl,-rpath=$$PWD/lib
 
 install:
-	cp lib/libml.so /usr/local/lib
+	cp lib/* /usr/local/lib
+	cp include/* /usr/local/include
