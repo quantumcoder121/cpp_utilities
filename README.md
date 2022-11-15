@@ -28,14 +28,18 @@ A dynamically linked library (DLL) named ```libml.so``` is present in the ```lib
 ## Compilation
 
 The ```g++``` flags used to create the executable are
+
     -O3 -Wall -Wextra -Wpedantic -I/path/to/include -L/path/to/lib -lml -fopenmp -Wl,-rpath=/path/to/lib
+
 The ```-O3, -Wall, -Wextra, -Wpedantic``` flags are optional
 While building the library, if you have done ```sudo make install```, all the flags except ```-fopenmp``` and ```-lml``` become optional.
 
 You can also use ```make main=your_file.cpp target``` to build the executable.
 
 To make the library again, the command is:
+
     make all
+
 To install it in the standard library and include directories, you can optionally enter ```sudo make install``` after doing this.
 
 ## Sidenote
