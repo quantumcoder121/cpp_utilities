@@ -31,7 +31,7 @@ The ```g++``` flags used to create the executable are
 
     -O3 -Wall -Wextra -Wpedantic -I/path/to/include -L/path/to/lib -lml -fopenmp -Wl,-rpath=/path/to/lib
 
-The ```-O3, -Wall, -Wextra, -Wpedantic``` flags are optional
+The ```-O3, -Wall, -Wextra, -Wpedantic``` flags are optional.
 While building the library, if you have done ```sudo make install```, all the flags except ```-fopenmp``` and ```-lml``` become optional.
 
 You can also use ```make main=your_file.cpp target``` to build the executable.
