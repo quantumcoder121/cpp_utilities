@@ -11,7 +11,7 @@ cppdl::neuron::neuron()
 cppdl::neuron::neuron(long long int n_inputs, std::string a_func): weights(numcpp::numcpp<double>(n_inputs, 0))
 {
     bias = 0;
-    activation_func = "none";
+    activation_func = a_func;
 }
 
 double cppdl::neuron::output(numcpp::numcpp<double> &input)
@@ -43,7 +43,7 @@ cppdl::dense::dense(int n_inputs, int n_outputs, std::string a_func)
     activation_func = a_func;
 }
 
-// what exactly is returned here?
+
 std::vector<double> cppdl::dense::output(numcpp::numcpp<double> &input)
 {
     if (input.length() != inputs)
@@ -56,6 +56,7 @@ std::vector<double> cppdl::dense::output(numcpp::numcpp<double> &input)
     {
         ret.push_back(neurons[i].output(input));
     }
+    return ret;
 }
 
 cppdl::input::input(int n_inputs)

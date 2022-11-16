@@ -1,7 +1,7 @@
-all:
+Lib:
 	g++ -O3 -Wall -Wextra -Wpedantic -c -fopenmp -fPIC src/*.cpp -I./include
-	g++ -O3 -fopenmp -shared *.o -o libml.so
-	rm *.o
+	g++ -O3 -fopenmp -shared cppdl.o  math.o  mllib.o -o libml.so
+	rm cppdl.o  math.o  mllib.o
 	mv libml.so lib
 
 # call as make main=your_file_name.cpp target

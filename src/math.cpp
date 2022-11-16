@@ -5,10 +5,10 @@
 #include <cfloat>
 
 // why?
-double math::mag(double a)
-{
-    return 0;
-}
+// double math::mag(double a)
+// {
+//     return 0;
+// }
 
 double math::exp(double a)
 {

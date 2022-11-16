@@ -38,7 +38,7 @@ You can also use ```make main=your_file.cpp target``` to build the executable.
 
 To make the library again, the command is:
 
-    make all
+    make Lib
 
 To install it in the standard library and include directories, you can optionally enter ```sudo make install``` after doing this.
 
