@@ -1,4 +1,4 @@
-# C++ Utilities for Machine Learning
+# C++ Utilities
 
 # Usage
 
@@ -43,5 +43,7 @@ To make the library again, the command is:
 To install it in the standard library and include directories, you can optionally enter ```sudo make install``` after doing this.
 
 ## Sidenote
+
+Special Thanks to [Ashwin Abraham](https://github.com/AshwinAbraham2021) for refactoring the code and making the DLL (also for fixing random bugs).
 
 Guys I really want to build this library much more and right now it's still in a very primary stage. If you happen to look at this repository, please please please contribute whatever you like. Even one PR would mean a lot to me. Let's make this world nicer by creating more and more open source stuff.
